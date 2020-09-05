@@ -1,5 +1,5 @@
 Name: ftphs
-Version: 1.0.9.1
+Version: 1.1.0.0
 License: LGPL
 Maintainer: John Goerzen <jgoerzen@complete.org>
 Author: John Goerzen
@@ -40,10 +40,10 @@ Library
     Network.FTP.Client.Parser,
     Network.FTP.Server,
     Network.FTP.Server.Parser
-  Extensions: ExistentialQuantification, OverlappingInstances, 
+  Extensions: ExistentialQuantification, OverlappingInstances,
    UndecidableInstances, CPP, ScopedTypeVariables
   Build-Depends: network, parsec, base >= 3 && < 5,
-                 mtl, regex-compat, 
+                 mtl, regex-compat,
                hslogger, MissingH>=1.0.0, bytestring
   GHC-Options: -O2
 
