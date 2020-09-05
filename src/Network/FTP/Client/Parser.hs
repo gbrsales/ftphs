@@ -42,10 +42,13 @@ module Network.FTP.Client.Parser(parseReply, parseGoodReply,
                                          unexpectedresp, isxresp,
                                          forcexresp,
                                          forceioresp,
+                                         parseMlsdReply,
                                          parseDirName)
 where
 
 import           Data.Bits.Utils
+import qualified Data.ByteString.Char8               as C
+import           Data.Char
 import           Data.List.Utils
 import           Data.String.Utils
 import           Data.Word
@@ -58,8 +61,6 @@ import           Text.Regex
 
 
 type FTPResult = (Int, [String])
-
--- import Control.Exception(Exception(PatternMatchFail), throw)
 
 logit :: String -> IO ()
 logit m = debugM "Network.FTP.Client.Parser" ("FTP received: " ++ m)
@@ -170,7 +171,7 @@ multiReply = try (do
 parseReply :: String -> FTPResult
 parseReply input =
     case parse multiReply "(unknown)" input of
-         Left err -> error ("FTP: " ++ (show err))
+         Left err    -> error ("FTP: " ++ (show err))
          Right reply -> reply
 
 -- | Parse a FTP reply.  Returns a (result code, text) pair.
@@ -248,11 +249,17 @@ respToSockAddr f =
 
 parseDirName :: FTPResult -> Maybe String
 parseDirName (257, name:_) =
-    let procq [] = []
-        procq ('"':_) = []
+    let procq []               = []
+        procq ('"':_)          = []
         procq ('"' : '"' : xs) = '"' : procq xs
-        procq (x:xs) = x : procq xs
+        procq (x:xs)           = x : procq xs
         in
         if head name /= '"'
            then Nothing
            else Just (procq (tail name))
+
+parseMlsdReply :: String -> (String, [(String, String)])
+parseMlsdReply l = (C.unpack filename, filter (not . null . fst) attrs)
+  where (attr, filename) = C.tail <$> C.break isSpace (C.pack l)
+        attrs            = fmap tail . break (== '=') . C.unpack <$>
+                           C.split ';' attr
