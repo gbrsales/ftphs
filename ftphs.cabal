@@ -1,5 +1,5 @@
 Name: ftphs
-Version: 1.0.9.2
+Version: 1.0.9.3
 License: LGPL
 Maintainer: John Goerzen <jgoerzen@complete.org>
 Author: John Goerzen
@@ -28,7 +28,7 @@ Description: ftphs provides a Haskell library to implement a FTP client
  * Standards compliant.
 
 Build-Type: Simple
-Cabal-Version: >=1.2.3
+Cabal-Version: >=1.8.0
 
 Flag buildtests
   description: Build the executable to run unit tests
@@ -40,7 +40,7 @@ Library
     Network.FTP.Client.Parser,
     Network.FTP.Server,
     Network.FTP.Server.Parser
-  Extensions: ExistentialQuantification, OverlappingInstances, 
+  Extensions: ExistentialQuantification,
    UndecidableInstances, CPP, ScopedTypeVariables
   Build-Depends: network, network-bsd, parsec, base >= 3 && < 5,
                  mtl, regex-compat,
